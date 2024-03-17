@@ -6,6 +6,8 @@ from pathlib import Path
 
 
 class VariablesDict(dict):
+    TEMPLATE_DIR_VARNAME = '$TEMPLATE_DIR'
+
     def __missing__(self, key):
         match key:
             case "$YEAR":
