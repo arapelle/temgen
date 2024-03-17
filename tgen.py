@@ -25,6 +25,10 @@ class TemgenProgram:
     def args(self):
         return self._args
 
+    @property
+    def temgen(self):
+        return self.__temgen
+
     def _parse_args(self, argv=None):
         prog_name = constants.PROGRAM_NAME
         prog_desc = 'A tool generating a directory architecture based on a template.'
@@ -90,9 +94,9 @@ class TemgenProgram:
         return variables
 
     def run(self):
-        self.__temgen.find_and_treat_template_file(Path(self.args.template_path),
-                                                   self.args.template_version,
-                                                   output_dir=self.args.output_dir)
+        self.temgen.find_and_treat_template_file(Path(self.args.template_path),
+                                                 self.args.template_version,
+                                                 output_dir=self.args.output_dir)
 
 
 if __name__ == '__main__':
