@@ -29,6 +29,7 @@ class VarStatement(AbstractMainStatement):
         self.__var_default = None
         self.__var_regex = None
         self.__var_value = None
+        self.__io_stream = None
 
     def run(self):
         with MethodScopeLog(self):
@@ -62,14 +63,14 @@ class VarStatement(AbstractMainStatement):
     def treat_children_nodes_of(self, node: XMLTree.Element):
         if len(node) > 1:
             raise RuntimeError(f"Too many nodes for <{node.tag}>.")
-        self.treat_child_node(node, node[0])
+        super().treat_children_nodes_of(node)
+        self.__var_value = self.__io_stream.getvalue()
 
     def treat_child_node(self, node: XMLTree.Element, child_node: XMLTree.Element):
         match child_node.tag:
             case "random":
-                io_stream = StringIO()
-                random_statement = RandomStatement(child_node, self, io_stream)
+                random_statement = RandomStatement(child_node, self, self.__io_stream)
                 random_statement.run()
-                self.__var_value = io_stream.getvalue()
+                self.__io_stream = random_statement.io_stream()
             case _:
                 super().treat_child_node(node, child_node)
