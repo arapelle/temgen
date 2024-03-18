@@ -6,8 +6,8 @@ import unittest
 from json import JSONDecodeError
 from pathlib import Path
 
-import constants
 import temgen
+from statement.template_statement import TemplateStatement
 from variables.variables_dict import VariablesDict
 from tests.test_temgen_program_base import TestTemgenProgramBase
 
@@ -18,7 +18,7 @@ class TestTemgenProgram(TestTemgenProgramBase):
             self._test_template_file("bad_root_node_name")
             self.fail()
         except RuntimeError as err:
-            self.assertEqual(str(err), f"Root node must be '{constants.ROOT_NODE_NAME}'!")
+            self.assertEqual(str(err), f"Root node must be '{TemplateStatement.STATEMENT_LABEL}'!")
 
     def test__simple_dirtree__valid__ok(self):
         self._test_template_file("simple_dirtree")

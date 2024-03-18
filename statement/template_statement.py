@@ -11,13 +11,15 @@ from statement.vars_statement import VarsStatement
 class TemplateStatement(AbstractDirStatement):
     from temgen import Temgen
 
+    STATEMENT_LABEL = "template"
+
     TEMGEN_LABEL = constants.LOWER_PROGRAM_NAME
     TEMPLATE_FILEPATH_LABEL = "template_filepath"
     OUTPUT_DIRPATH_LABEL = "output_dirpath"
 
     def __init__(self, current_node: XMLTree.Element, caller_statement: AbstractStatement | None, **kargs):
-        if current_node.tag != constants.ROOT_NODE_NAME:
-            raise RuntimeError(f"Root node must be '{constants.ROOT_NODE_NAME}'!")
+        if current_node.tag != self.STATEMENT_LABEL:
+            raise RuntimeError(f"Root node must be '{self.STATEMENT_LABEL}'!")
         self.__caller_statement = caller_statement
         parent_statement = None
         if self.__caller_statement is not None:
