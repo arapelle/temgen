@@ -7,6 +7,8 @@ import re
 import xml.etree.ElementTree as XMLTree
 from pathlib import Path
 
+import semver
+
 import constants
 import regex
 from log import make_console_file_logger
@@ -75,6 +77,8 @@ def default_template_roots():
 
 
 class Temgen:
+    VERSION = semver.Version.parse('0.5.0')
+
     def __init__(self, ui: AbstractUi, variables=None):
         if variables is None:
             variables = VariablesDict()

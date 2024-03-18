@@ -8,7 +8,6 @@ import temgen
 import regex
 from ui.tkinter_ui import TkinterUi
 from ui.terminal_ui import TerminalUi
-import version
 from variables.variables_dict import VariablesDict
 
 
@@ -33,7 +32,8 @@ class TemgenProgram:
         prog_name = constants.PROGRAM_NAME
         prog_desc = 'A tool generating a directory architecture based on a template.'
         argparser = argparse.ArgumentParser(prog=prog_name, description=prog_desc)
-        argparser.add_argument('--version', action='version', version=f'{prog_name} {version.VERSION}')
+        argparser.add_argument('--version', action='version',
+                               version=f'{prog_name} {temgen.Temgen.VERSION}')
         argparser.add_argument('-K', f'--{TemgenProgram.UiType.TKINTER}'.lower(), action='store_const',
                                dest='ui', const=TemgenProgram.UiType.TKINTER, help='Use tkinter I/O.')
         argparser.add_argument('-T', f'--{TemgenProgram.UiType.TERMINAL}'.lower(), action='store_const',
