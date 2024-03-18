@@ -11,7 +11,7 @@ import constants
 import regex
 from log import make_console_file_logger
 from ui.abstract_ui import AbstractUi
-from variables_dict import VariablesDict
+from variables.variables_dict import VariablesDict
 
 
 def environment_template_roots():

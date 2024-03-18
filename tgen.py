@@ -9,7 +9,7 @@ import regex
 from ui.tkinter_ui import TkinterUi
 from ui.terminal_ui import TerminalUi
 import version
-from variables_dict import VariablesDict
+from variables.variables_dict import VariablesDict
 
 
 class TemgenProgram:

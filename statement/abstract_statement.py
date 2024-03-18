@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 import statement.abstract_dir_statement
 import statement.template_statement
-from variables_dict import VariablesDict
+from variables.variables_dict import VariablesDict
 
 
 class AbstractStatement(ABC):
@@ -89,13 +89,5 @@ class AbstractStatement(ABC):
         pass
 
     def format_str(self, value_str: str):
-        #TODO Optimize
-        vars_dict = VariablesDict()
-        current_statement = self
-        while current_statement is not None:
-            vars_dict.update(current_statement.variables())
-            current_statement = current_statement.parent_statement()
-        template_filepath = self.template_statement().template_filepath()
-        template_dir_var_value = template_filepath.absolute().parent if template_filepath is not None else ""
-        vars_dict[VariablesDict.TEMPLATE_DIR_VARNAME] = template_dir_var_value
-        return value_str.format_map(vars_dict)
+        from variables.variables_map import VariablesMap
+        return value_str.format_map(VariablesMap(self))

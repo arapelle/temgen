@@ -8,7 +8,7 @@ from pathlib import Path
 
 import constants
 import temgen
-from variables_dict import VariablesDict
+from variables.variables_dict import VariablesDict
 from tests.test_temgen_program_base import TestTemgenProgramBase
 
 
