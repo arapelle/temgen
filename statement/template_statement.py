@@ -62,12 +62,36 @@ class TemplateStatement(AbstractDirStatement):
 
     def run(self):
         with MethodScopeLog(self):
+            self.__check_temgen_version()
             vars_node = self.current_node().find("vars")
             if vars_node is not None:
                 self.__current_child_statement = VarsStatement(vars_node, self)
                 self.__current_child_statement.run()
             self.treat_children_nodes_of(self.current_node())
             self.__current_child_statement = None
+
+    def __check_temgen_version(self):
+        from temgen import Temgen
+        import semver
+        min_version = self.current_node().get("temgen-min-version", None)
+        max_version = self.current_node().get("temgen-max-version", None)
+        if min_version is None and max_version is None:
+            return
+        if min_version is not None:
+            min_version = semver.Version.parse(min_version)
+            max_version = semver.Version.parse(max_version) if max_version is not None else Temgen.VERSION
+        else:
+            min_version = Temgen.VERSION
+            max_version = semver.Version.parse(max_version)
+        if min_version > max_version:
+            raise RuntimeError("temgen-min-version should not be greater than temgen-max-version: "
+                                f"min: {min_version}, max: {max_version}")
+        if Temgen.VERSION < min_version:
+            raise RuntimeError("temgen is not compatible with the expected min version: "
+                               f"{Temgen.VERSION} (min: {min_version})")
+        if Temgen.VERSION > max_version:
+            raise RuntimeError("temgen is not compatible with the expected max version: "
+                               f"{Temgen.VERSION} (max: {max_version})")
 
     def treat_children_nodes_of(self, node: XMLTree.Element):
         if node == self.current_node():
