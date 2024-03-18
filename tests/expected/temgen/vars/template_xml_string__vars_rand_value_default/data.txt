@@ -1,0 +1,3 @@
+rand_i = 0
+rand_f = 0.000
+rand_alpha = ''

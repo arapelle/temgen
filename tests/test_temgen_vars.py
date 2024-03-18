@@ -32,6 +32,9 @@ class TestTemgenVars(DirCmpTestCase):
         <var name="rand_alpha">
              <random type="alpha" min-len="4" max-len="9" />
         </var>
+        <var name="rand_alpha_fixed_len">
+             <random type="alpha" len="6" />
+        </var>
         <var name="rand_lower">
              <random type="lower" min-len="4" max-len="9" />
         </var>
@@ -63,6 +66,7 @@ rand_i = {rand_i}
 rand_f = {rand_f}
 rand_digit = {rand_digit}
 rand_alpha = {rand_alpha}
+rand_alpha_fixed_len = {rand_alpha_fixed_len}
 rand_lower = {rand_lower}
 rand_upper = {rand_upper}
 rand_alnum = {rand_alnum}
@@ -77,6 +81,38 @@ rand_chars = {rand_chars}
 """
         random.seed(42)
         project_root_dir = "template_xml_string__vars_rand_value"
+        sys.stdin = io.StringIO(f"{project_root_dir}")
+        template_generator = Temgen(TerminalUi())
+        template_generator.treat_template_xml_string(template_string,
+                                                     output_dir=Path(self._output_dirpath))
+        self._compare_output_and_expected(project_root_dir)
+
+    def test__treat_template_xml_string__vars_rand_value_default__ok(self):
+        template_string = """<?xml version="1.0"?>
+<template>
+    <vars>
+        <var name="output_root_dir" type="gstr" />
+        <var name="rand_i">
+            <random type="int" max="0" />
+        </var>
+        <var name="rand_f">
+            <random type="float" max="0" />
+        </var>
+        <var name="rand_alpha">
+             <random type="alpha" max-len="0" />
+        </var>
+    </vars>
+    <dir path="{output_root_dir}" >
+        <file path="data.txt" >
+rand_i = {rand_i}
+rand_f = {rand_f}
+rand_alpha = '{rand_alpha}'
+        </file>
+    </dir>
+</template>
+"""
+        random.seed(42)
+        project_root_dir = "template_xml_string__vars_rand_value_default"
         sys.stdin = io.StringIO(f"{project_root_dir}")
         template_generator = Temgen(TerminalUi())
         template_generator.treat_template_xml_string(template_string,
