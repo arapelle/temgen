@@ -83,6 +83,69 @@ rand_chars = {rand_chars}
                                                      output_dir=Path(self._output_dirpath))
         self._compare_output_and_expected(project_root_dir)
 
+    def test__treat_template_xml_string__vars_if__ok(self):
+        template_string = """<?xml version="1.0"?>
+<template>
+    <vars>
+        <var name="output_root_dir" type="gstr" />
+        <var name="choice" type="gstr" />
+        <if expr="'{choice}' == 'even'">
+            <then>
+                <var name="number" value="86420" />
+            </then>
+            <else>
+                <var name="number" value="97531" />
+            </else>
+        </if>
+    </vars>
+    <dir path="{output_root_dir}" >
+        <file path="data.txt" >
+{number}
+        </file>
+    </dir>
+</template>
+"""
+        random.seed(42)
+        project_root_dir = "template_xml_string__vars_if"
+        sys.stdin = io.StringIO(f"{project_root_dir}\neven")
+        template_generator = Temgen(TerminalUi())
+        template_generator.treat_template_xml_string(template_string,
+                                                     output_dir=Path(self._output_dirpath))
+        self._compare_output_and_expected(project_root_dir)
+
+    def test__treat_template_xml_string__vars_match__ok(self):
+        template_string = """<?xml version="1.0"?>
+<template>
+    <vars>
+        <var name="output_root_dir" type="gstr" />
+        <var name="choice" type="gstr" />
+        <match expr="{choice}">
+            <case value="normal">
+                <var name="value" value="value" />
+            </case>
+            <case value="super">
+                <var name="value" value="super_value" />
+            </case>
+            <case>
+                <var name="value" value="default_value" />
+            </case>
+        </match>
+    </vars>
+    <dir path="{output_root_dir}" >
+        <file path="data.txt" >
+{value}
+        </file>
+    </dir>
+</template>
+"""
+        random.seed(42)
+        project_root_dir = "template_xml_string__vars_match"
+        sys.stdin = io.StringIO(f"{project_root_dir}\nsuper")
+        template_generator = Temgen(TerminalUi())
+        template_generator.treat_template_xml_string(template_string,
+                                                     output_dir=Path(self._output_dirpath))
+        self._compare_output_and_expected(project_root_dir)
+
 
 if __name__ == '__main__':
     unittest.main()

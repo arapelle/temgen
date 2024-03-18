@@ -20,5 +20,13 @@ class VarsStatement(AbstractMainStatement):
             case "var":
                 var_statement = VarStatement(child_node, self)
                 var_statement.run()
+            case "if":
+                from statement.if_statement import IfStatement
+                if_statement = IfStatement(child_node, self)
+                if_statement.run()
+            case "match":
+                from statement.match_statement import MatchStatement
+                match_statement = MatchStatement(child_node, self)
+                match_statement.run()
             case _:
                 super().treat_child_node(node, child_node)
