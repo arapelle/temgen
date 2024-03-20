@@ -45,53 +45,6 @@ class TestTemgenProgram(TestTemgenProgramBase):
     def test__simple_fdirtree__valid__ok(self):
         self._test_template_file("simple_fdirtree", stdin_str='arba\ncore')
 
-    def test__if_fdirtree__valid_yes_yes__ok(self):
-        output_root_dir = "if_valid_yes_yes"
-        in_str = f'{output_root_dir}\nyes\nyes'
-        self._test_template_file("if_fdirtree__valid_cmp_str", project_root_dir=output_root_dir, stdin_str=in_str)
-
-    def test__if_fdirtree__valid_yes_no__ok(self):
-        output_root_dir = "if_valid_yes_no"
-        in_str = f'{output_root_dir}\nyes\nno'
-        self._test_template_file("if_fdirtree__valid_cmp_str", project_root_dir=output_root_dir, stdin_str=in_str)
-
-    def test__if_fdirtree__valid_no_no__ok(self):
-        output_root_dir = "if_valid_no_no"
-        in_str = f'{output_root_dir}\nno\nno'
-        self._test_template_file("if_fdirtree__valid_cmp_str", project_root_dir=output_root_dir, stdin_str=in_str)
-
-    def test__if_fdirtree__invalid_two_then__exception(self):
-        try:
-            output_root_dir = "if_fdirtree__invalid_two_then"
-            in_str = f'{output_root_dir}\nyes'
-            self._test_template_file(output_root_dir, stdin_str=in_str)
-            self.fail()
-        except Exception as ex:
-            self.assertEqual(str(ex), "Too many 'then' nodes for a 'if' node.")
-
-    def test__if_fdirtree__invalid_two_else__exception(self):
-        try:
-            output_root_dir = "if_fdirtree__invalid_two_else"
-            in_str = f'{output_root_dir}\nyes'
-            self._test_template_file(output_root_dir, stdin_str=in_str)
-            self.fail()
-        except Exception as ex:
-            self.assertEqual(str(ex), "Too many 'else' nodes for a 'if' node.")
-
-    def test__if_fdirtree__invalid_missing_then__exception(self):
-        try:
-            output_root_dir = "if_fdirtree__invalid_missing_then"
-            in_str = f'{output_root_dir}\nyes'
-            self._test_template_file(output_root_dir, stdin_str=in_str)
-            self.fail()
-        except Exception as ex:
-            self.assertEqual(str(ex), "A 'else' node is provided for a 'if' node but a 'then' node is missing.")
-
-    def test__if_fdirtree__valid_6_7__ok(self):
-        output_root_dir = "if_valid_6_7"
-        in_str = f'{output_root_dir}\n6\n7'
-        self._test_template_file("if_fdirtree__valid_cmp_int", project_root_dir=output_root_dir, stdin_str=in_str)
-
     def test__match_fdirtree__valid_value__ok(self):
         output_root_dir = "match_valid_value"
         in_str = f'{output_root_dir}\nvalue'
