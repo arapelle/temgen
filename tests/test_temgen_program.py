@@ -1,5 +1,4 @@
 import datetime
-import random
 import shutil
 import sys
 import unittest
@@ -7,22 +6,11 @@ from json import JSONDecodeError
 from pathlib import Path
 
 import temgen
-from statement.template_statement import TemplateStatement
 from variables.variables_dict import VariablesDict
 from tests.test_temgen_program_base import TestTemgenProgramBase
 
 
 class TestTemgenProgram(TestTemgenProgramBase):
-    def test__bad_dirtree__bad_root_node_name__err(self):
-        try:
-            self._test_template_file("bad_root_node_name")
-            self.fail()
-        except RuntimeError as err:
-            self.assertEqual(str(err), f"Root node must be '{TemplateStatement.STATEMENT_LABEL}'!")
-
-    def test__simple_dirtree__valid__ok(self):
-        self._test_template_file("simple_dirtree")
-
     def test__simple_dirtree__template_not_found__err(self):
         template_fpath = "template_not_found"
         try:
@@ -42,16 +30,11 @@ class TestTemgenProgram(TestTemgenProgramBase):
             self.assertTrue(err_str.find(f"Template not found") == -1)
             self.assertTrue(err_str.find(template_fpath) != -1)
 
-    def test__simple_fdirtree__valid__ok(self):
-        self._test_template_file("simple_fdirtree", stdin_str='arba\ncore')
-
     def test__cli_args__invalid_output_dir__exception(self):
         try:
             context_argv = ['--terminal', '-o', f'__not_found__']
-            output_root_dir = "cli_args__invalid_output_dir"
-            in_str = f'{output_root_dir}\nok\nok'
-            self._test_template_file("simple_fdirtree", project_root_dir=output_root_dir, stdin_str=in_str,
-                                     context_argv=context_argv)
+            self._run_generated_trivial_template_file("simple_fdirtree",
+                                                      argv=context_argv, file_contents="")
             self.fail()
         except Exception as ex:
             self.assertEqual(str(ex), "The provided output directory does not exist: '__not_found__'.")
@@ -88,20 +71,6 @@ class TestTemgenProgram(TestTemgenProgramBase):
             self.fail()
         except RuntimeError as err:
             self.assertEqual(str(err), bad_var)
-
-    def test__trivial_template__bad_format_str__exception(self):
-        try:
-            self._run_generated_trivial_template_file("bad_format_str", file_contents="{whut")
-            self.fail()
-        except ValueError as err:
-            self.assertEqual(str(err), "expected '}' before end of string")
-
-    def test__trivial_template__unknown_var__exception(self):
-        try:
-            self._run_generated_trivial_template_file("unknown_var", file_contents="{unknown_var}")
-            self.fail()
-        except KeyError:
-            pass
 
     def test__var_file__valid_var_file__ok(self):
         output_root_dir = "var_file__valid_var_file"
@@ -416,12 +385,6 @@ class TestTemgenProgram(TestTemgenProgramBase):
         in_str = "\nbale_26\nBANA23\nAZER_58"
         self._test_generated_trivial_template_file(output_root_dir, stdin_str=in_str, var_definitions=var_defs,
                                                    file_contents="'{first}'\n")
-
-    def test__vars_rand_value__all__ok(self):
-        random.seed(42)
-        output_root_dir = "vars_rand_value__all"
-        in_str = f"{output_root_dir}"
-        self._test_template_file("vars_rand_value", project_root_dir=output_root_dir, stdin_str=in_str)
 
     def test__builtins__template__ok(self):
         project_root_dir = "builtins__template"

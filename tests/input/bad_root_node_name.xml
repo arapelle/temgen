@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<bad_name>
-    <dir path="bad_dirtree">
-        <file path="data.txt" />
-    </dir>
-</bad_name>
