@@ -10,9 +10,6 @@ from pathlib import Path
 import constants
 import regex
 from log import make_console_file_logger
-from node import template_node
-from abstract_temgen import AbstractTemgen
-from template_tree_info import TemplateTreeInfo
 from ui.abstract_ui import AbstractUi
 from variables_dict import VariablesDict
 
@@ -77,7 +74,7 @@ def default_template_roots():
     return roots
 
 
-class Temgen(AbstractTemgen):
+class Temgen:
     def __init__(self, ui: AbstractUi, variables=None):
         if variables is None:
             variables = VariablesDict()
@@ -179,35 +176,23 @@ class Temgen(AbstractTemgen):
                                f"in {template_dpath}.")
         return Path(template_fpath)
 
-    def treat_template_tree_info(self, tree_info: TemplateTreeInfo):
-        print('#' * 80)
-        print(f"Input file: {tree_info.current_template_filepath}")
-        if not tree_info.current_dirpath.exists():
-            raise RuntimeError(f"The provided output directory does not exist: '{tree_info.current_dirpath}'.")
-        with open(tree_info.current_template_filepath, 'r') as template_file:
-            tree = XMLTree.parse(template_file)
-            return template_node.TemplateNode.treat_template_node(tree.getroot(), self, tree_info)
-
     def treat_template_file(self, template_filepath: Path, output_dir=None):
-        if output_dir is None:
-            output_dir = Path.cwd()
-        tree_info = TemplateTreeInfo(current_template_filepath=template_filepath,
-                                     variables=self.init_variables(),
-                                     current_dirpath=output_dir)
-        self.treat_template_tree_info(tree_info)
+        from statement.template_statement import TemplateStatement
+        with open(template_filepath, 'r') as template_file:
+            element_tree = XMLTree.parse(template_file)
+        output_dir = self.__resolve_output_dir(output_dir)
+        template_statement = TemplateStatement(element_tree.getroot(), None,
+                                               temgen=self,
+                                               template_filepath=template_filepath,
+                                               variables=copy.deepcopy(self.init_variables()),
+                                               output_dirpath=Path(output_dir))
+        template_statement.run()
 
     def find_and_treat_template_file(self, template_path: Path, version: str | None = None, output_dir=None):
         template_filepath = self.find_template_file(template_path, version)
         self.treat_template_file(template_filepath, output_dir)
 
     def treat_template_xml_string(self, template_str: str, output_dir=None):
-        tree_info = TemplateTreeInfo(current_template_filepath=None,
-                                     variables=self.init_variables(),
-                                     current_dirpath=output_dir)
-        root_element = XMLTree.fromstring(template_str)
-        return template_node.TemplateNode.treat_template_node(root_element, self, tree_info)
-
-    def experimental_treat_template_xml_string(self, template_str: str, output_dir=None):
         from statement.template_statement import TemplateStatement
         root_element = XMLTree.fromstring(template_str)
         output_dir = self.__resolve_output_dir(output_dir)

@@ -39,8 +39,8 @@ class TestTemgenBasic(DirCmpTestCase):
         project_root_dir = "template_xml_string__vars_dir_file"
         sys.stdin = io.StringIO(f"{project_root_dir}\ndata\nAlix\nwhite")
         template_generator = Temgen(TerminalUi())
-        template_generator.experimental_treat_template_xml_string(template_string,
-                                                                  output_dir=Path(self._output_dirpath))
+        template_generator.treat_template_xml_string(template_string,
+                                                     output_dir=Path(self._output_dirpath))
         self._compare_output_and_expected(project_root_dir)
 
     def test__treat_template_xml_string__basic_template__ok(self):

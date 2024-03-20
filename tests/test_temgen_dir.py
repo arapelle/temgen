@@ -32,8 +32,8 @@ class TestTemgenDir(DirCmpTestCase):
         templates_dir = config.local_templates_dirpath()
         sys.stdin = io.StringIO(f"{project_root_dir}\n{templates_dir}\nstuff")
         template_generator = Temgen(TerminalUi())
-        template_generator.experimental_treat_template_xml_string(template_string,
-                                                                  output_dir=Path(self._output_dirpath))
+        template_generator.treat_template_xml_string(template_string,
+                                                     output_dir=Path(self._output_dirpath))
         self._compare_output_and_expected(project_root_dir)
 
 

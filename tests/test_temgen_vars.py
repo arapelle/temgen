@@ -79,8 +79,8 @@ rand_chars = {rand_chars}
         project_root_dir = "template_xml_string__vars_rand_value"
         sys.stdin = io.StringIO(f"{project_root_dir}")
         template_generator = Temgen(TerminalUi())
-        template_generator.experimental_treat_template_xml_string(template_string,
-                                                                  output_dir=Path(self._output_dirpath))
+        template_generator.treat_template_xml_string(template_string,
+                                                     output_dir=Path(self._output_dirpath))
         self._compare_output_and_expected(project_root_dir)
 
 

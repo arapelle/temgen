@@ -68,8 +68,8 @@ class TestTemgenIf(DirCmpTestCase):
         project_root_dir = "template_xml_string__if_valid_cmp_str_yes_yes"
         sys.stdin = io.StringIO(f"{project_root_dir}\nyes\nyes")
         template_generator = Temgen(TerminalUi())
-        template_generator.experimental_treat_template_xml_string(template_string,
-                                                                  output_dir=Path(self._output_dirpath))
+        template_generator.treat_template_xml_string(template_string,
+                                                     output_dir=Path(self._output_dirpath))
         self._compare_output_and_expected(project_root_dir)
 
     def test__treat_template_xml_string__if_valid_cmp_str_yes_no__ok(self):
@@ -77,8 +77,8 @@ class TestTemgenIf(DirCmpTestCase):
         project_root_dir = "template_xml_string__if_valid_cmp_str_yes_no"
         sys.stdin = io.StringIO(f"{project_root_dir}\nyes\nno")
         template_generator = Temgen(TerminalUi())
-        template_generator.experimental_treat_template_xml_string(template_string,
-                                                                  output_dir=Path(self._output_dirpath))
+        template_generator.treat_template_xml_string(template_string,
+                                                     output_dir=Path(self._output_dirpath))
         self._compare_output_and_expected(project_root_dir)
 
     def test__treat_template_xml_string__if_valid_cmp_str_NO_NO__ok(self):
@@ -86,8 +86,8 @@ class TestTemgenIf(DirCmpTestCase):
         project_root_dir = "template_xml_string__if_valid_cmp_str_NO_NO"
         sys.stdin = io.StringIO(f"{project_root_dir}\nNO\nNO")
         template_generator = Temgen(TerminalUi())
-        template_generator.experimental_treat_template_xml_string(template_string,
-                                                                  output_dir=Path(self._output_dirpath))
+        template_generator.treat_template_xml_string(template_string,
+                                                     output_dir=Path(self._output_dirpath))
         self._compare_output_and_expected(project_root_dir)
 
     def test__treat_template_xml_string__if_invalid_two_then__exception(self):
@@ -116,8 +116,8 @@ class TestTemgenIf(DirCmpTestCase):
             project_root_dir = "template_xml_string__if_invalid_two_then"
             sys.stdin = io.StringIO(f"{project_root_dir}\nno_matter")
             template_generator = Temgen(TerminalUi())
-            template_generator.experimental_treat_template_xml_string(template_string,
-                                                                      output_dir=Path(self._output_dirpath))
+            template_generator.treat_template_xml_string(template_string,
+                                                         output_dir=Path(self._output_dirpath))
             self.fail()
         except RuntimeError as ex:
             self.assertEqual(str(ex), "Too many 'then' nodes for a 'if' node.")
@@ -148,8 +148,8 @@ class TestTemgenIf(DirCmpTestCase):
             project_root_dir = "template_xml_string__if_invalid_two_else"
             sys.stdin = io.StringIO(f"{project_root_dir}\nno_matter")
             template_generator = Temgen(TerminalUi())
-            template_generator.experimental_treat_template_xml_string(template_string,
-                                                                      output_dir=Path(self._output_dirpath))
+            template_generator.treat_template_xml_string(template_string,
+                                                         output_dir=Path(self._output_dirpath))
             self.fail()
         except RuntimeError as ex:
             self.assertEqual(str(ex), "Too many 'else' nodes for a 'if' node.")
@@ -174,8 +174,8 @@ class TestTemgenIf(DirCmpTestCase):
             project_root_dir = "template_xml_string__if_invalid_missing_then"
             sys.stdin = io.StringIO(f"{project_root_dir}\nno_matter")
             template_generator = Temgen(TerminalUi())
-            template_generator.experimental_treat_template_xml_string(template_string,
-                                                                      output_dir=Path(self._output_dirpath))
+            template_generator.treat_template_xml_string(template_string,
+                                                         output_dir=Path(self._output_dirpath))
             self.fail()
         except RuntimeError as ex:
             self.assertEqual(str(ex), "A 'else' node is provided for a 'if' node but a 'then' node is missing.")
@@ -200,8 +200,8 @@ class TestTemgenIf(DirCmpTestCase):
             project_root_dir = "template_xml_string__if_invalid_unknown_child"
             sys.stdin = io.StringIO(f"{project_root_dir}")
             template_generator = Temgen(TerminalUi())
-            template_generator.experimental_treat_template_xml_string(template_string,
-                                                                      output_dir=Path(self._output_dirpath))
+            template_generator.treat_template_xml_string(template_string,
+                                                         output_dir=Path(self._output_dirpath))
             self.fail()
         except RuntimeError as ex:
             self.assertEqual(str(ex), "In 'if', bad child node type: file.")
