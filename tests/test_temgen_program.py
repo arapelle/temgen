@@ -152,14 +152,6 @@ class TestTemgenProgram(TestTemgenProgramBase):
         expected_value = (Path.cwd() / self._generated_input_dirname).resolve()
         self.assertEqual(extracted_value, expected_value)
 
-    def test__trivial_fdirtree__builtin_date_vars__ok(self):
-        project_root_dir = "builtin_date_vars"
-        f_contents = "{$YEAR},{$MONTH},{$DAY},{$DATE_YMD},{$DATE_Y_M_D}"
-        file_contents_dict = self._run_generated_trivial_template_file(project_root_dir, file_contents=f_contents)
-        extracted_value = file_contents_dict["data.txt"]
-        expected_value = datetime.date.today().strftime("%Y,%m,%d,%Y%m%d,%Y-%m-%d")
-        self.assertEqual(extracted_value, expected_value)
-
     @classmethod
     def setUpClass(cls) -> None:
         cls._local_sub_dirpath = "temgen_program"

@@ -1,3 +1,4 @@
+import datetime
 import unittest
 
 from statement.template_statement import TemplateStatement
@@ -75,6 +76,31 @@ class TestTemgenBasic(TestTemgenBase):
             self._test__treat_template_xml_string__ok(template_string, project_root_dir, input_parameters)
         except KeyError:
             pass
+
+    def test__treat_template_xml_string__builtin_vars__ok(self):
+        template_string = """
+$TEMPLATE_DIR = "{$TEMPLATE_DIR}"
+$YEAR = {$YEAR}
+$MONTH = {$MONTH}
+$DAY = {$DAY}
+$DATE_YMD = {$DATE_YMD}
+$DATE_Y_M_D = {$DATE_Y_M_D}
+        """
+        project_root_dir = "template_xml_string__builtin_vars"
+        input_parameters = []
+        output_file_contents = self._run__treat_template_xml_string__file_contents__ok(template_string,
+                                                                                       project_root_dir,
+                                                                                       input_parameters)
+        expected_file_contents = """
+$TEMPLATE_DIR = ""
+$YEAR = %Y
+$MONTH = %m
+$DAY = %d
+$DATE_YMD = %Y%m%d
+$DATE_Y_M_D = %Y-%m-%d
+        """
+        expected_file_contents = datetime.date.today().strftime(expected_file_contents).strip()
+        self.assertEqual(output_file_contents, expected_file_contents)
 
 
 if __name__ == '__main__':
