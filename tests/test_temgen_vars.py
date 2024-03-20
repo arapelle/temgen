@@ -1,15 +1,10 @@
-import io
 import random
-import sys
 import unittest
-from pathlib import Path
 
-from ui.terminal_ui import TerminalUi
-from temgen import Temgen
-from tests.dircmp_test_case import DirCmpTestCase
+from tests.test_temgen_base import TestTemgenBase
 
 
-class TestTemgenVars(DirCmpTestCase):
+class TestTemgenVars(TestTemgenBase):
     @classmethod
     def setUpClass(cls) -> None:
         cls._local_sub_dirpath = "temgen/vars"
@@ -81,11 +76,8 @@ rand_chars = {rand_chars}
 """
         random.seed(42)
         project_root_dir = "template_xml_string__vars_rand_value"
-        sys.stdin = io.StringIO(f"{project_root_dir}")
-        template_generator = Temgen(TerminalUi())
-        template_generator.treat_template_xml_string(template_string,
-                                                     output_dir=Path(self._output_dirpath))
-        self._compare_output_and_expected(project_root_dir)
+        input_parameters = []
+        self._test__treat_template_xml_string__ok(template_string, project_root_dir, input_parameters)
 
     def test__treat_template_xml_string__vars_rand_value_default__ok(self):
         template_string = """<?xml version="1.0"?>
@@ -113,11 +105,8 @@ rand_alpha = '{rand_alpha}'
 """
         random.seed(42)
         project_root_dir = "template_xml_string__vars_rand_value_default"
-        sys.stdin = io.StringIO(f"{project_root_dir}")
-        template_generator = Temgen(TerminalUi())
-        template_generator.treat_template_xml_string(template_string,
-                                                     output_dir=Path(self._output_dirpath))
-        self._compare_output_and_expected(project_root_dir)
+        input_parameters = []
+        self._test__treat_template_xml_string__ok(template_string, project_root_dir, input_parameters)
 
     def test__treat_template_xml_string__vars_if__ok(self):
         template_string = """<?xml version="1.0"?>
@@ -143,11 +132,8 @@ rand_alpha = '{rand_alpha}'
 """
         random.seed(42)
         project_root_dir = "template_xml_string__vars_if"
-        sys.stdin = io.StringIO(f"{project_root_dir}\neven")
-        template_generator = Temgen(TerminalUi())
-        template_generator.treat_template_xml_string(template_string,
-                                                     output_dir=Path(self._output_dirpath))
-        self._compare_output_and_expected(project_root_dir)
+        input_parameters = ["even"]
+        self._test__treat_template_xml_string__ok(template_string, project_root_dir, input_parameters)
 
     def test__treat_template_xml_string__vars_match__ok(self):
         template_string = """<?xml version="1.0"?>
@@ -176,11 +162,8 @@ rand_alpha = '{rand_alpha}'
 """
         random.seed(42)
         project_root_dir = "template_xml_string__vars_match"
-        sys.stdin = io.StringIO(f"{project_root_dir}\nsuper")
-        template_generator = Temgen(TerminalUi())
-        template_generator.treat_template_xml_string(template_string,
-                                                     output_dir=Path(self._output_dirpath))
-        self._compare_output_and_expected(project_root_dir)
+        input_parameters = ["super"]
+        self._test__treat_template_xml_string__ok(template_string, project_root_dir, input_parameters)
 
 
 if __name__ == '__main__':
