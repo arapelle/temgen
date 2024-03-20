@@ -45,48 +45,6 @@ class TestTemgenProgram(TestTemgenProgramBase):
     def test__simple_fdirtree__valid__ok(self):
         self._test_template_file("simple_fdirtree", stdin_str='arba\ncore')
 
-    def test__match_fdirtree__valid_value__ok(self):
-        output_root_dir = "match_valid_value"
-        in_str = f'{output_root_dir}\nvalue'
-        self._test_template_file("match_fdirtree__valid_with_default",
-                                 project_root_dir=output_root_dir, stdin_str=in_str)
-
-    def test__match_fdirtree__valid_expr_09__ok(self):
-        output_root_dir = "match_valid_expr_09"
-        in_str = f'{output_root_dir}\n1235'
-        self._test_template_file("match_fdirtree__valid_with_default",
-                                 project_root_dir=output_root_dir, stdin_str=in_str)
-
-    def test__match_fdirtree__valid_default__ok(self):
-        output_root_dir = "match_valid_default"
-        in_str = f'{output_root_dir}\ndefault_case'
-        self._test_template_file("match_fdirtree__valid_with_default",
-                                 project_root_dir=output_root_dir, stdin_str=in_str)
-
-    def test__match_fdirtree__valid_no_match__ok(self):
-        output_root_dir = "match_valid_no_match"
-        in_str = f'{output_root_dir}\nno_match'
-        self._test_template_file("match_fdirtree__valid_without_default",
-                                 project_root_dir=output_root_dir, stdin_str=in_str)
-
-    def test__match_fdirtree__invalid_two_default__exception(self):
-        try:
-            output_root_dir = "match_fdirtree__invalid_two_default"
-            in_str = f'{output_root_dir}\nno_match'
-            self._test_template_file(output_root_dir, stdin_str=in_str)
-            self.fail()
-        except Exception as ex:
-            self.assertEqual(str(ex), "A match node cannot have two default case nodes.")
-
-    def test__match_fdirtree__invalid_missing_case__exception(self):
-        try:
-            output_root_dir = "match_fdirtree__invalid_missing_case"
-            in_str = f'{output_root_dir}\nno_match'
-            self._test_template_file(output_root_dir, stdin_str=in_str)
-            self.fail()
-        except Exception as ex:
-            self.assertEqual(str(ex), "case nodes are missing in match node.")
-
     def test__cli_args__invalid_output_dir__exception(self):
         try:
             context_argv = ['--terminal', '-o', f'__not_found__']

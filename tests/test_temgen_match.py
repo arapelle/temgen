@@ -1,15 +1,9 @@
-import io
-import random
-import sys
 import unittest
-from pathlib import Path
 
-from ui.terminal_ui import TerminalUi
-from temgen import Temgen
-from tests.dircmp_test_case import DirCmpTestCase
+from tests.test_temgen_base import TestTemgenBase
 
 
-class TestTemgenMatch(DirCmpTestCase):
+class TestTemgenMatch(TestTemgenBase):
     @classmethod
     def setUpClass(cls) -> None:
         cls._local_sub_dirpath = "temgen/match"
@@ -77,48 +71,33 @@ class TestTemgenMatch(DirCmpTestCase):
     def test__treat_template_xml_string__match_valid_value__ok(self):
         template_string = self.match_valid__template_string(with_default=True)
         project_root_dir = "template_xml_string__match_valid_value"
-        sys.stdin = io.StringIO(f"{project_root_dir}\nvalue")
-        template_generator = Temgen(TerminalUi())
-        template_generator.treat_template_xml_string(template_string,
-                                                     output_dir=Path(self._output_dirpath))
-        self._compare_output_and_expected(project_root_dir)
+        input_parameters = ["value"]
+        self._test__treat_template_xml_string__ok(template_string, project_root_dir, input_parameters)
 
     def test__treat_template_xml_string__match_valid_expr_09__ok(self):
         template_string = self.match_valid__template_string(with_default=True)
         project_root_dir = "template_xml_string__match_valid_expr_09"
-        sys.stdin = io.StringIO(f"{project_root_dir}\n123")
-        template_generator = Temgen(TerminalUi())
-        template_generator.treat_template_xml_string(template_string,
-                                                     output_dir=Path(self._output_dirpath))
-        self._compare_output_and_expected(project_root_dir)
+        input_parameters = ["123"]
+        self._test__treat_template_xml_string__ok(template_string, project_root_dir, input_parameters)
 
     def test__treat_template_xml_string__match_valid_default__ok(self):
         template_string = self.match_valid__template_string(with_default=True)
         project_root_dir = "template_xml_string__match_valid_default"
-        sys.stdin = io.StringIO(f"{project_root_dir}\naz09")
-        template_generator = Temgen(TerminalUi())
-        template_generator.treat_template_xml_string(template_string,
-                                                     output_dir=Path(self._output_dirpath))
-        self._compare_output_and_expected(project_root_dir)
+        input_parameters = ["az09"]
+        self._test__treat_template_xml_string__ok(template_string, project_root_dir, input_parameters)
 
     def test__treat_template_xml_string__match_valid_no_match__ok(self):
         template_string = self.match_valid__template_string(with_default=False)
         project_root_dir = "template_xml_string__match_valid_no_match"
-        sys.stdin = io.StringIO(f"{project_root_dir}\naz09")
-        template_generator = Temgen(TerminalUi())
-        template_generator.treat_template_xml_string(template_string,
-                                                     output_dir=Path(self._output_dirpath))
-        self._compare_output_and_expected(project_root_dir)
+        input_parameters = ["az09"]
+        self._test__treat_template_xml_string__ok(template_string, project_root_dir, input_parameters)
 
     def test__treat_template_xml_string__match_invalid_two_default__exception(self):
         try:
             template_string = self.match_invalid_two_default__template_string()
             project_root_dir = "template_xml_string__match_invalid_two_default"
-            sys.stdin = io.StringIO(f"{project_root_dir}\nno_matter")
-            template_generator = Temgen(TerminalUi())
-            template_generator.treat_template_xml_string(template_string,
-                                                         output_dir=Path(self._output_dirpath))
-            self.fail()
+            input_parameters = ["no_matter"]
+            self._test__treat_template_xml_string__exception(template_string, project_root_dir, input_parameters)
         except RuntimeError as ex:
             self.assertEqual(str(ex), "A match node cannot have two default case nodes.")
 
@@ -126,11 +105,8 @@ class TestTemgenMatch(DirCmpTestCase):
         try:
             template_string = self.match_invalid_missing_case__template_string()
             project_root_dir = "template_xml_string__match_invalid_missing_case"
-            sys.stdin = io.StringIO(f"{project_root_dir}\nno_matter")
-            template_generator = Temgen(TerminalUi())
-            template_generator.treat_template_xml_string(template_string,
-                                                         output_dir=Path(self._output_dirpath))
-            self.fail()
+            input_parameters = ["no_matter"]
+            self._test__treat_template_xml_string__exception(template_string, project_root_dir, input_parameters)
         except RuntimeError as ex:
             self.assertEqual(str(ex), "case nodes are missing in match node.")
 
