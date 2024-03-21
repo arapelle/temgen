@@ -10,7 +10,7 @@ class MatchStatement(AbstractBranchStatement):
     def __init__(self, current_node: XMLTree.Element, parent_statement: AbstractStatement, **kargs):
         super().__init__(current_node, parent_statement, **kargs)
 
-    def run(self):
+    def execute(self):
         with MethodScopeLog(self):
             match_node = self.current_node()
             expr_attr = match_node.attrib['expr']

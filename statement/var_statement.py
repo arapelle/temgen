@@ -31,7 +31,7 @@ class VarStatement(AbstractMainStatement):
         self.__var_value = None
         self.__io_stream = None
 
-    def run(self):
+    def execute(self):
         with MethodScopeLog(self):
             var_node = self.current_node()
             self.__var_name = var_node.attrib.get('name')
@@ -49,7 +49,8 @@ class VarStatement(AbstractMainStatement):
                         self.__var_value = self.temgen().ui().ask_valid_var(self.__var_type, self.__var_name,
                                                                             self.__var_default, self.__var_regex)
                     else:
-                        self.treat_children_nodes_of(self.current_node())
+                        self.treat_children_nodes()
+                        self.__var_value = self.__io_stream.getvalue()
                 self.__var_value = self.format_str(self.__var_value)
                 self.__check_variable_value()
                 self.variables().update({self.__var_name: self.__var_value})
@@ -60,11 +61,9 @@ class VarStatement(AbstractMainStatement):
         #TODO use self.__var_type and self.__var_regex (if any), to check sefl.__var_value
         pass
 
-    def treat_children_nodes_of(self, node: XMLTree.Element):
+    def check_number_of_children_nodes_of(self, node: XMLTree.Element):
         if len(node) > 1:
             raise RuntimeError(f"Too many nodes for <{node.tag}>.")
-        super().treat_children_nodes_of(node)
-        self.__var_value = self.__io_stream.getvalue()
 
     def treat_child_node(self, node: XMLTree.Element, child_node: XMLTree.Element):
         match child_node.tag:

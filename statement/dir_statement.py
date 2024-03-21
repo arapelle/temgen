@@ -8,18 +8,21 @@ from statement.abstract_statement import AbstractStatement
 
 
 class DirStatement(AbstractDirStatement):
+    from statement.template_statement import TemplateStatement
+
     def __init__(self, current_node: XMLTree.Element, parent_statement: AbstractStatement, **kargs):
         super().__init__(current_node, parent_statement, **kargs)
         self.__output_dirpath = Path()
 
-    def run(self):
+    def current_output_dirpath(self) -> Path:
+        return self.__output_dirpath
+
+    def allows_template(self):
+        return True
+
+    def execute(self):
         with MethodScopeLog(self):
-            template_path = self.current_node().get('template', None)
-            if template_path is None:
-                self.__make_output_dir()
-            else:
-                self.__run_template(template_path)
-            self.treat_children_nodes_of(self.current_node())
+            self.__make_output_dir()
 
     def __make_output_dir(self):
         parent_output_dirpath = self.parent_statement().current_dir_statement().current_output_dirpath()
@@ -27,22 +30,11 @@ class DirStatement(AbstractDirStatement):
         self.logger.info(f"Make dir {self.__output_dirpath}")
         self.__output_dirpath.mkdir(parents=True, exist_ok=True)
 
-    def __run_template(self, template_path):
+    def check_not_template_attributes(self, nb_template_attributes: int):
         assert 'path' not in self.current_node().attrib
-        template_path = Path(self.format_str(template_path))
-        version_attr = self.current_node().get('template-version', None)
-        if version_attr:
-            version_attr = self.format_str(version_attr)
-        template_path = self.temgen().find_template_file(template_path, version_attr)
-        from statement.template_statement import TemplateStatement
-        with open(template_path, 'r') as template_file:
-            data_tree = XMLTree.parse(template_file)
-        template_statement = TemplateStatement(data_tree.getroot(), self,
-                                               variables=self.variables(),
-                                               template_filepath=template_path)
-        template_statement.run()
+
+    def post_template_run(self, template_statement: TemplateStatement):
         expected_statement = template_statement.expected_statement()
-        assert isinstance(expected_statement, self.__class__)
         self.__output_dirpath = expected_statement.current_output_dirpath()
 
     def treat_child_node(self, node: XMLTree.Element, child_node: XMLTree.Element):
@@ -57,6 +49,3 @@ class DirStatement(AbstractDirStatement):
                 match_statement.run()
             case _:
                 super().treat_child_node(node, child_node)
-
-    def current_output_dirpath(self) -> Path:
-        return self.__output_dirpath

@@ -18,9 +18,8 @@ class RandomStatement(AbstractMainStatement):
     def io_stream(self):
         return self.__io_stream
 
-    def run(self):
+    def execute(self):
         with MethodScopeLog(self):
-            self.treat_children_nodes_of(self.current_node())
             random_value = self.__try_random_value_from_type()
             if random_value is None:
                 random_value = self.__try_random_value_from_set()

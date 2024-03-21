@@ -9,7 +9,7 @@ class IfStatement(AbstractBranchStatement):
     def __init__(self, current_node: XMLTree.Element, parent_statement: AbstractStatement, **kargs):
         super().__init__(current_node, parent_statement, **kargs)
 
-    def run(self):
+    def execute(self):
         with MethodScopeLog(self):
             from re import match, fullmatch
             then_node = None

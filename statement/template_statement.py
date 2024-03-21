@@ -62,14 +62,14 @@ class TemplateStatement(AbstractDirStatement):
     def expected_statement(self):
         return self.__expected_statement
 
-    def run(self):
+    def execute(self):
         with MethodScopeLog(self):
             self.__check_temgen_version()
             vars_node = self.current_node().find("vars")
             if vars_node is not None:
                 self.__current_child_statement = VarsStatement(vars_node, self)
                 self.__current_child_statement.run()
-            self.treat_children_nodes_of(self.current_node())
+            self.treat_children_nodes()
             self.__current_child_statement = None
 
     def __check_temgen_version(self):
@@ -95,12 +95,11 @@ class TemplateStatement(AbstractDirStatement):
             raise RuntimeError("temgen is not compatible with the expected max version: "
                                f"{Temgen.VERSION} (max: {max_version})")
 
-    def treat_children_nodes_of(self, node: XMLTree.Element):
+    def check_number_of_children_nodes_of(self, node: XMLTree.Element):
         if node == self.current_node():
             limit = 2 if node.find("vars") is not None else 1
             if len(node) > limit:
                 raise RuntimeError("Too many nodes under <template>.")
-        super().treat_children_nodes_of(node)
 
     def treat_child_node(self, node: XMLTree.Element, child_node: XMLTree.Element):
         if child_node.tag == "vars":

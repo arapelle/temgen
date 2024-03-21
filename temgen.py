@@ -100,7 +100,7 @@ class Temgen:
     def template_roots(self):
         return self.__template_root_dpaths
 
-    def find_template_file(self, template_path: Path, version_attr):
+    def find_template_file(self, template_path: Path, version_attr) -> Path:
         template_dpath = template_path.parent
         template_fname = template_path.name
         has_xml_suffix = template_path.suffix == ".xml"
