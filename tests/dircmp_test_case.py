@@ -1,4 +1,6 @@
 import filecmp
+import os
+import shutil
 from pathlib import Path
 from unittest import TestCase
 
@@ -6,11 +8,13 @@ from unittest import TestCase
 class DirCmpTestCase(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls._expected_dirname = getattr(cls, "_expected_dirname", "expected")
-        cls._output_dirname = getattr(cls, "_output_dirname", "output")
-        output_dpath = Path(f"{cls._output_dirname}")
+        cls._expected_root_dirname = getattr(cls, "_expected_root_dirname", "expected")
+        cls._output_root_dirname = getattr(cls, "_output_root_dirname", "output")
+        cls._local_sub_dirpath = getattr(cls, "_local_sub_dirpath", "")
+        cls._output_dirpath = f"{cls._output_root_dirname}/{cls._local_sub_dirpath}"
+        cls._expected_dirpath = f"{cls._expected_root_dirname}/{cls._local_sub_dirpath}"
+        output_dpath = Path(cls._output_dirpath)
         if output_dpath.exists():
-            import shutil
             shutil.rmtree(output_dpath)
         output_dpath.mkdir(parents=True)
 
@@ -24,12 +28,20 @@ class DirCmpTestCase(TestCase):
 
     @classmethod
     def removeOutputDir(cls):
-        cls.removeDirIfSuccess(cls._output_dirname)
+        if cls.executionIsSuccess():
+            assert str(cls._output_dirpath).find(cls._output_root_dirname) != -1
+            opath = Path(cls._output_dirpath).absolute().parent
+            orpath = Path(cls._output_root_dirname).absolute()
+            shutil.rmtree(Path(cls._output_dirpath))
+            while opath != orpath and len(os.listdir(opath)) == 0:
+                shutil.rmtree(opath)
+                opath = opath.parent
+            if orpath.exists() and len(os.listdir(orpath)) == 0:
+                shutil.rmtree(orpath)
 
     @classmethod
     def removeDirIfSuccess(cls, dir_path):
         if cls.executionIsSuccess():
-            import shutil
             shutil.rmtree(Path(dir_path))
 
     @classmethod
@@ -42,8 +54,8 @@ class DirCmpTestCase(TestCase):
         TestCase.run(self, result)  # call superclass run method
 
     def _compare_output_and_expected(self, dir_name):
-        left_dir = f"{self._output_dirname}/{dir_name}"
-        right_dir = f"{self._expected_dirname}/{dir_name}"
+        left_dir = f"{self._output_dirpath}/{dir_name}"
+        right_dir = f"{self._expected_dirpath}/{dir_name}"
         self._compare_directories(filecmp.dircmp(left_dir, right_dir))
 
     def _compare_directories(self, dcmp):

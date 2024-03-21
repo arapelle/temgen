@@ -282,7 +282,8 @@ class TestTemgenProgram(TestTemgenProgramBase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        TestTemgenProgramBase.setUpClass()
+        cls._local_sub_dirpath = "temgen_program"
+        super().setUpClass()
         template_local_root = "temfile"
         template_root = Path(f"{temgen.system_template_roots()[-1]}/{template_local_root}")
         template_root.mkdir(parents=True, exist_ok=True)

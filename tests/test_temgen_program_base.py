@@ -22,18 +22,18 @@ class TestTemgenProgramBase(DirCmpTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        DirCmpTestCase.setUpClass()
+        super().setUpClass()
         cls._generated_input_dirname = getattr(cls, "_generated_input_dirname", "generated_input")
         generated_input_dir_path = Path.cwd() / f"{cls._generated_input_dirname}"
         if generated_input_dir_path.exists():
             import shutil
             shutil.rmtree(generated_input_dir_path)
         generated_input_dir_path.mkdir(exist_ok=True)
-        cls._ut_context_argv = ['--terminal', '-o', f'{cls._output_dirname}']
+        cls._ut_context_argv = ['--terminal', '-o', f'{cls._output_dirpath}']
 
     @classmethod
     def tearDownClass(cls):
-        cls.removeOutputDir()
+        super().tearDownClass()
         cls.removeGeneratedInputDir()
 
     @classmethod
@@ -53,7 +53,7 @@ class TestTemgenProgramBase(DirCmpTestCase):
         return self._extract_files_contents(project_root_dir)
 
     def _extract_files_contents(self, project_root_dir):
-        root_dir = f"{self._output_dirname}/{project_root_dir}"
+        root_dir = f"{self._output_dirpath}/{project_root_dir}"
         file_list = glob.glob("**/*.txt", root_dir=root_dir, recursive=True)
         file_contents_dict = {}
         for txt_file in file_list:
