@@ -1,3 +1,4 @@
+import sys
 from argparse import ArgumentParser
 import re
 
@@ -128,14 +129,13 @@ class Temgencmd(CliCommand):
 
 if __name__ == '__main__':
     temgencmd = Temgencmd()
-    arg_parser: ArgumentParser = ArgumentParser(add_help=False)
-    arg_parser.add_argument("args", nargs="...", metavar="command ...", help="Arguments for command")
-    args, argv = arg_parser.parse_known_args()
-    if len(args.args) > 0:
-        command = args.args[0]
-        if hasattr(temgencmd, command):
-            temgencmd.parse_and_invoke([command] + argv + args.args[1:])
-        else:
-            temgencmd.parse_and_invoke(["generate"] + argv + args.args)
+    program_args = sys.argv
+    print(program_args)
+    if len(program_args) <= 1:
+        temgencmd.parse_and_invoke(program_args[1:])
     else:
-        temgencmd.parse_and_invoke(argv + args.args)
+        command = program_args[1]
+        if command == '-h' or command == '--help' or hasattr(temgencmd, command):
+            temgencmd.parse_and_invoke(program_args[1:])
+        else:
+            temgencmd.parse_and_invoke(["generate"] + program_args[1:])
