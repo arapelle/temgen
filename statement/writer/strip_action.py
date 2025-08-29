@@ -5,7 +5,7 @@ class StripAction(StrEnum):
     RAW = "raw"
     LSTRIP = "lstrip"
     RSTRIP = "rstrip"
-    RSTRIP_HS = "rstrip-hs"
+    RSTRIP_HS = "rstrip-hs" # HS: horizontal space
     RSTRIP_NL = "rstrip-nl"
     STRIP = "strip"
     STRIP_HS = "strip-hs"
