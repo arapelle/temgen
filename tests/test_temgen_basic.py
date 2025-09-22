@@ -490,7 +490,7 @@ $OUTPUT_FILE_EXTS = '{output_file_exts}'
         except RuntimeError as err:
             self.assertEqual(str(err), f"Bad attribute name in var statement: 'if_unset'.")
 
-    def test__cli_temgen__check_template__bad_attribute_name__exception(self):
+    def test__cli_temgen__check_template__bad_attribute_name__exception(self): #move to cli_temgen tests
         template_string = self.check_template__bad_attribute_name__str()
         argv = ["temgen", "--check-template"]
         project_root_dir = "cli_temgen__check_template__bad_attribute_name"
